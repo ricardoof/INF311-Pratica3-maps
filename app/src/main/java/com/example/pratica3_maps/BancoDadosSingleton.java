@@ -11,12 +11,12 @@ public final class BancoDadosSingleton {
     private final String NOME_BANCO = "pratica3";
     private static BancoDadosSingleton INSTANCE;
 
-    private final String[] SCRIP_DATABASE_CREATE = new String[] {
-            "CREATE TABLE Logs (id INTEGER PRIMARY KEY AUTOINCREMENT,"+" msg TEXT, timestamp TEXT, id_location INTEGER"+ " FOREIGN KEY (id_location) REFERENCES Location (id));",
+    private final String[] SCRIPT_DATABASE_CREATE = new String[] {
             "CREATE TABLE Location (id INTEGER PRIMARY KEY AUTOINCREMENT,"+" descricao TEXT, latitude REAL, longitude REAL);",
-            "INSERT INTO Location (id, descricao, latitude, longitude) VALUES ('1', 'Minha casa em Itaocara', '-21.674786599501207', '-42.087803755987444' );",
-            "INSERT INTO Location (id, descricao, latitude, longitude) VALUES ('2', 'Minha casa em Viçosa', '-20.756855651371684', '-42.8751327472389' );",
-            "INSERT INTO Location (id, descricao, latitude, longitude) VALUES ('3', 'DPI/UFV', '-20.764807038105072', '-42.86837497388309');"
+            "CREATE TABLE Logs (id INTEGER PRIMARY KEY AUTOINCREMENT,"+" msg TEXT, timestamp TEXT, id_location INTEGER,"+" FOREIGN KEY (id_location) REFERENCES Location (id));",
+            "INSERT INTO Location (descricao, latitude, longitude) VALUES ('Minha casa em Itaocara', -21.674786599501207, -42.087803755987444);",
+            "INSERT INTO Location (descricao, latitude, longitude) VALUES ('Minha casa em Viçosa', -20.756855651371684, -42.8751327472389);",
+            "INSERT INTO Location (descricao, latitude, longitude) VALUES ('DPI/UFV', -20.764807038105072, -42.86837497388309);"
     };
 
     private BancoDadosSingleton() {
@@ -32,7 +32,7 @@ public final class BancoDadosSingleton {
 
         //Cria tabelas do banco de dados caso o mesmo estiver vazio.
         if(c.getCount() == 1) {
-            for (String s : SCRIP_DATABASE_CREATE) {
+            for (String s : SCRIPT_DATABASE_CREATE) {
                 db.execSQL(s);
             }
             Log.i("BANCO_DADOS", "Criou as tabelas do banco e as populou.");

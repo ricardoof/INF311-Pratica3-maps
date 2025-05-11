@@ -2,8 +2,10 @@ package com.example.pratica3_maps;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.Manifest;
 import android.widget.Toast;
@@ -26,9 +28,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.text.DecimalFormat;
 
 public class MostrarMapa extends FragmentActivity implements OnMapReadyCallback {
-    public LatLng ITAOCARA, VICOSA, DPI, coordenada;
+    public LatLng VICOSA, coordenada;
     private FusedLocationProviderClient minhaLocalizacao;
     public Marker meuMarcador;
+    public String descricao;
+    public Cursor local;
     private GoogleMap map;
 
     @Override
@@ -36,47 +40,76 @@ public class MostrarMapa extends FragmentActivity implements OnMapReadyCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mostrar_mapa);
 
-        Intent it = getIntent();
-        ITAOCARA = new LatLng(it.getDoubleExtra("lat1", 0), it.getDoubleExtra("lng1", 0));
-        VICOSA = new LatLng(it.getDoubleExtra("lat2", 0), it.getDoubleExtra("lng2", 0));
-        DPI = new LatLng(it.getDoubleExtra("lat3", 0), it.getDoubleExtra("lng3", 0));
-        String local = it.getStringExtra("local");
-
-        if("itaocara".equals(local)){
-            coordenada = ITAOCARA;
-        } else if ("vicosa".equals(local)) {
-            coordenada = VICOSA;
-        } else {
-            coordenada = DPI;
-        }
-
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapa)).getMapAsync(this);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Intent it = getIntent();
+        String id = it.getStringExtra("id");
+        assert id != null;
+        if(id.equals("1")){
+            local = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == 1", null);
+        } else if(id.equals("2")) {
+            local = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == 2", null);
+        } else {
+            local = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == 3", null);
+        }
+        //Cursor local = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == ", null);
+        if (local.moveToFirst()) {
+            double latitude = local.getDouble(local.getColumnIndexOrThrow("latitude"));
+            double longitude = local.getDouble(local.getColumnIndexOrThrow("longitude"));
+            descricao = local.getString(local.getColumnIndexOrThrow("descricao"));
+            coordenada = new LatLng(latitude, longitude);
+        }
+        //Intent it = getIntent();
+        //String descricao = it.getStringExtra("descricao");
+        //coordenada = new LatLng(it.getDoubleExtra("lat", 0), it.getDoubleExtra("lng", 0));
+        //coordenada = new LatLng(latitude, longitude);
         map = googleMap;
-        map.addMarker(new MarkerOptions().position(ITAOCARA).title("Minha casa em Itaocara"));
-        map.addMarker(new MarkerOptions().position(VICOSA).title("Minha casa em Viçosa"));
-        map.addMarker(new MarkerOptions().position(DPI).title("DPI/UFV"));
+        map.addMarker(new MarkerOptions().position(coordenada).title(descricao));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordenada, 16));
     }
 
     public void Itaocara(View v) {
+        Cursor itaocara = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == 1", null);
+        if (itaocara.moveToFirst()) {
+            double latitude = itaocara.getDouble(itaocara.getColumnIndexOrThrow("latitude"));
+            double longitude = itaocara.getDouble(itaocara.getColumnIndexOrThrow("longitude"));
+            descricao = itaocara.getString(itaocara.getColumnIndexOrThrow("descricao"));
+            coordenada = new LatLng(latitude, longitude);
+        }
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ITAOCARA, 16);
+        map.addMarker(new MarkerOptions().position(coordenada).title(descricao));
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(coordenada, 16);
         map.animateCamera(update);
     }
 
     public void Vicosa(View v) {
+        Cursor vicosa = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == 2", null);
+        if (vicosa.moveToFirst()) {
+            double latitude = vicosa.getDouble(vicosa.getColumnIndexOrThrow("latitude"));
+            double longitude = vicosa.getDouble(vicosa.getColumnIndexOrThrow("longitude"));
+            descricao = vicosa.getString(vicosa.getColumnIndexOrThrow("descricao"));
+            coordenada = new LatLng(latitude, longitude);
+        }
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(VICOSA, 16);
+        map.addMarker(new MarkerOptions().position(coordenada).title(descricao));
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(coordenada, 16);
         map.animateCamera(update);
     }
 
     public void DPI(View v) {
+        Cursor dpi = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == 3", null);
+        if (dpi.moveToFirst()) {
+            double latitude = dpi.getDouble(dpi.getColumnIndexOrThrow("latitude"));
+            double longitude = dpi.getDouble(dpi.getColumnIndexOrThrow("longitude"));
+            descricao = dpi.getString(dpi.getColumnIndexOrThrow("descricao"));
+            coordenada = new LatLng(latitude, longitude);
+        }
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(DPI, 16);
+        map.addMarker(new MarkerOptions().position(coordenada).title(descricao));
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(coordenada, 16);
         map.animateCamera(update);
     }
 
