@@ -65,7 +65,7 @@ public final class BancoDadosSingleton {
     // Busca registros
     public Cursor buscar(String tabela, String[] colunas, String where, String orderBy) {
         Cursor c;
-        if(!where.equals(""))
+        if(where != null && !where.isEmpty())
             c = db.query(tabela, colunas, where, null, null, null, orderBy);
         else
             c = db.query(tabela, colunas, null, null, null, null, orderBy);
