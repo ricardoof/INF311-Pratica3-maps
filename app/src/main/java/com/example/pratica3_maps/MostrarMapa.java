@@ -30,7 +30,7 @@ import java.text.DecimalFormat;
 public class MostrarMapa extends FragmentActivity implements OnMapReadyCallback {
     public LatLng VICOSA, coordenada;
     private FusedLocationProviderClient minhaLocalizacao;
-    public Marker meuMarcador;
+    public Marker meuMarcador, marcadorLocal, marcadorItaocara, marcadorVicosa, marcadorDPI;
     public String descricao;
     public Cursor local;
     private GoogleMap map;
@@ -39,7 +39,6 @@ public class MostrarMapa extends FragmentActivity implements OnMapReadyCallback 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mostrar_mapa);
-
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapa)).getMapAsync(this);
     }
 
@@ -55,19 +54,17 @@ public class MostrarMapa extends FragmentActivity implements OnMapReadyCallback 
         } else {
             local = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == 3", null);
         }
-        //Cursor local = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == ", null);
         if (local.moveToFirst()) {
             double latitude = local.getDouble(local.getColumnIndexOrThrow("latitude"));
             double longitude = local.getDouble(local.getColumnIndexOrThrow("longitude"));
             descricao = local.getString(local.getColumnIndexOrThrow("descricao"));
             coordenada = new LatLng(latitude, longitude);
         }
-        //Intent it = getIntent();
-        //String descricao = it.getStringExtra("descricao");
-        //coordenada = new LatLng(it.getDoubleExtra("lat", 0), it.getDoubleExtra("lng", 0));
-        //coordenada = new LatLng(latitude, longitude);
+        if(marcadorLocal != null) {
+            marcadorLocal.remove();
+        }
         map = googleMap;
-        map.addMarker(new MarkerOptions().position(coordenada).title(descricao));
+        marcadorLocal = map.addMarker(new MarkerOptions().position(coordenada).title(descricao));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordenada, 16));
     }
 
@@ -79,8 +76,11 @@ public class MostrarMapa extends FragmentActivity implements OnMapReadyCallback 
             descricao = itaocara.getString(itaocara.getColumnIndexOrThrow("descricao"));
             coordenada = new LatLng(latitude, longitude);
         }
+        if(marcadorItaocara != null) {
+            marcadorItaocara.remove();
+        }
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        map.addMarker(new MarkerOptions().position(coordenada).title(descricao));
+        marcadorItaocara = map.addMarker(new MarkerOptions().position(coordenada).title(descricao));
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(coordenada, 16);
         map.animateCamera(update);
     }
@@ -93,8 +93,11 @@ public class MostrarMapa extends FragmentActivity implements OnMapReadyCallback 
             descricao = vicosa.getString(vicosa.getColumnIndexOrThrow("descricao"));
             coordenada = new LatLng(latitude, longitude);
         }
+        if(marcadorVicosa != null) {
+            marcadorVicosa.remove();
+        }
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        map.addMarker(new MarkerOptions().position(coordenada).title(descricao));
+        marcadorVicosa = map.addMarker(new MarkerOptions().position(coordenada).title(descricao));
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(coordenada, 16);
         map.animateCamera(update);
     }
@@ -107,8 +110,11 @@ public class MostrarMapa extends FragmentActivity implements OnMapReadyCallback 
             descricao = dpi.getString(dpi.getColumnIndexOrThrow("descricao"));
             coordenada = new LatLng(latitude, longitude);
         }
+        if(marcadorDPI != null) {
+            marcadorDPI.remove();
+        }
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        map.addMarker(new MarkerOptions().position(coordenada).title(descricao));
+        marcadorDPI = map.addMarker(new MarkerOptions().position(coordenada).title(descricao));
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(coordenada, 16);
         map.animateCamera(update);
     }
@@ -117,6 +123,13 @@ public class MostrarMapa extends FragmentActivity implements OnMapReadyCallback 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
+        }
+
+        Cursor vicosa = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == 2", null);
+        if (vicosa.moveToFirst()) {
+            double latitude = vicosa.getDouble(vicosa.getColumnIndexOrThrow("latitude"));
+            double longitude = vicosa.getDouble(vicosa.getColumnIndexOrThrow("longitude"));
+            coordenada = new LatLng(latitude, longitude);
         }
 
         minhaLocalizacao = LocationServices.getFusedLocationProviderClient(this);
@@ -128,11 +141,11 @@ public class MostrarMapa extends FragmentActivity implements OnMapReadyCallback 
                 posicaoAtual.setLatitude(location.getLatitude());
                 posicaoAtual.setLongitude(location.getLongitude());
 
-                Location vicosa = new Location("");
-                vicosa.setLatitude(VICOSA.latitude);
-                vicosa.setLongitude(VICOSA.longitude);
+                Location casaVicosa = new Location("");
+                casaVicosa.setLatitude(coordenada.latitude);
+                casaVicosa.setLongitude(coordenada.longitude);
 
-                double distancia = posicaoAtual.distanceTo(vicosa);
+                double distancia = posicaoAtual.distanceTo(casaVicosa);
                 DecimalFormat df = new DecimalFormat("0.##");
                 String distanciaString = df.format(distancia);
                 Toast.makeText(getBaseContext(), distanciaString +" m", Toast.LENGTH_SHORT).show();
