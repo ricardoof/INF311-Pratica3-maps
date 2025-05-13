@@ -45,14 +45,8 @@ public class MostrarMapa extends FragmentActivity implements OnMapReadyCallback 
     public void onMapReady(GoogleMap googleMap) {
         Intent it = getIntent();
         String id = it.getStringExtra("id");
-        assert id != null;
-        if(id.equals("1")){
-            local = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == 1", null);
-        } else if(id.equals("2")) {
-            local = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == 2", null);
-        } else {
-            local = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == 3", null);
-        }
+        local = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == " + id, null);
+
         if (local.moveToFirst()) {
             double latitude = local.getDouble(local.getColumnIndexOrThrow("latitude"));
             double longitude = local.getDouble(local.getColumnIndexOrThrow("longitude"));
@@ -123,18 +117,17 @@ public class MostrarMapa extends FragmentActivity implements OnMapReadyCallback 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
         }
-
-        Cursor vicosa = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == 2", null);
-        if (vicosa.moveToFirst()) {
-            double latitude = vicosa.getDouble(vicosa.getColumnIndexOrThrow("latitude"));
-            double longitude = vicosa.getDouble(vicosa.getColumnIndexOrThrow("longitude"));
+        Cursor local = BancoDadosSingleton.getInstance().buscar("Location", new String[]{"id", "descricao", "latitude", "longitude"}, "id == 2", null);
+        if (local.moveToFirst()) {
+            double latitude = local.getDouble(local.getColumnIndexOrThrow("latitude"));
+            double longitude = local.getDouble(local.getColumnIndexOrThrow("longitude"));
             coordenada = new LatLng(latitude, longitude);
         }
 
         minhaLocalizacao = LocationServices.getFusedLocationProviderClient(this);
         minhaLocalizacao.getLastLocation().addOnSuccessListener(location -> {
             if (location != null) {
-                LatLng ATUAL = new LatLng(location.getLatitude(), location.getLongitude());
+                LatLng localAtual = new LatLng(location.getLatitude(), location.getLongitude());
 
                 Location posicaoAtual = new Location("");
                 posicaoAtual.setLatitude(location.getLatitude());
@@ -153,8 +146,8 @@ public class MostrarMapa extends FragmentActivity implements OnMapReadyCallback 
                     meuMarcador.remove();
                 }
 
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(ATUAL, 16));
-                meuMarcador = map.addMarker(new MarkerOptions().position(ATUAL).title("Minha localização atual").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(localAtual, 16));
+                meuMarcador = map.addMarker(new MarkerOptions().position(localAtual).title("Minha localização atual").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
             }
         });
     }

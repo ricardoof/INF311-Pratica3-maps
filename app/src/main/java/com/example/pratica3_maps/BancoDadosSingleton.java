@@ -41,33 +41,24 @@ public final class BancoDadosSingleton {
         Log.i("BANCO_DADOS", "Abriu conexão com o banco.");
     }
 
-    public SQLiteDatabase getDb() {
-        return db;
-    }
-
-
-    // Insere um novo registro
     public long inserir(String tabela, ContentValues valores) {
         long id = db.insert(tabela, null, valores);
         Log.i("BANCO_DADOS", "Cadastrou registro com o id [" + id + "]");
         return id;
     }
 
-    // Atualiza registros
     public int atualizar(String tabela, ContentValues valores, String where) {
         int count = db.update(tabela, valores, where, null);
         Log.i("BANCO_DADOS", "Atualizou [" + count + "] registros");
         return count;
     }
 
-    // Deleta registros
     public int deletar(String tabela, String where) {
         int count = db.delete(tabela, where, null);
         Log.i("BANCO_DADOS", "Deletou [" + count + "] registros");
         return count;
     }
 
-    // Busca registros
     public Cursor buscar(String tabela, String[] colunas, String where, String orderBy) {
         Cursor c;
         if(where != null && !where.isEmpty())
@@ -78,7 +69,6 @@ public final class BancoDadosSingleton {
         return c;
     }
 
-    // Abre conexão com o banco
     private void abrir() {
         Context ctx = MyApp.getAppContext();
         if(!db.isOpen()) {
@@ -97,7 +87,6 @@ public final class BancoDadosSingleton {
         return INSTANCE;
     }
 
-    // Fecha conexão com o banco
     public void fechar() {
         if(db != null && db.isOpen()) {
             db.close();

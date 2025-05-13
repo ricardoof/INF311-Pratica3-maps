@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -25,26 +24,21 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         String aux = l.getItemAtPosition(position).toString();
-        String mensagem;
-        String id_location;
-        String timestamp;
+        String mensagem, timestamp;
         ContentValues valores;
 
         switch(position) {
             case 0:
                 mensagem = "Cidade natal";
-                id_location = "1";
                 timestamp = "";
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     timestamp = Instant.now().toString();
                 }
-
                 valores = new ContentValues();
                 valores.put("msg", mensagem);
                 valores.put("timestamp", timestamp);
-                valores.put("id_location", Integer.parseInt(id_location));
-
+                valores.put("id_location", 1);
                 BancoDadosSingleton.getInstance().inserir("Logs", valores);
 
                 Intent itaocara = new Intent(getBaseContext(), MostrarMapa.class);
@@ -54,18 +48,15 @@ public class MainActivity extends ListActivity {
                 break;
             case 1:
                 mensagem = "Viçosa";
-                id_location = "2";
                 timestamp = "";
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     timestamp = Instant.now().toString();
                 }
-
                 valores = new ContentValues();
                 valores.put("msg", mensagem);
                 valores.put("timestamp", timestamp);
-                valores.put("id_location", Integer.parseInt(id_location));
-
+                valores.put("id_location", 2);
                 BancoDadosSingleton.getInstance().inserir("Logs", valores);
 
                 Intent vicosa = new Intent(getBaseContext(), MostrarMapa.class);
@@ -75,18 +66,15 @@ public class MainActivity extends ListActivity {
                 break;
             case 2:
                 mensagem = "DPI";
-                id_location = "3";
                 timestamp = "";
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     timestamp = Instant.now().toString();
                 }
-
                 valores = new ContentValues();
                 valores.put("msg", mensagem);
                 valores.put("timestamp", timestamp);
-                valores.put("id_location", Integer.parseInt(id_location));
-
+                valores.put("id_location", 3);
                 BancoDadosSingleton.getInstance().inserir("Logs", valores);
 
                 Intent dpi = new Intent(getBaseContext(), MostrarMapa.class);
@@ -95,7 +83,6 @@ public class MainActivity extends ListActivity {
                 startActivity(dpi);
                 break;
             case 3:
-                Log.i("MENU", "Cliquei no relatório");
                 Intent it = new Intent(getBaseContext(), Report.class);
                 startActivity(it);
                 break;

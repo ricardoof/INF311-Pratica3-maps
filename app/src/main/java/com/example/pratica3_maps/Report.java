@@ -17,7 +17,7 @@ public class Report extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.i("LOG_IDS", logIds.toString());
 
         logsList.add(0, "Meus Logs");
         Cursor c = BancoDadosSingleton.getInstance().buscar("Logs", new String[] {"id", "msg", "timestamp", "id_location"}, null, null);
@@ -25,7 +25,6 @@ public class Report extends ListActivity {
             int id = c.getInt(c.getColumnIndexOrThrow("id"));
             String msg = c.getString(c.getColumnIndexOrThrow("msg"));
             String timestamp = c.getString(c.getColumnIndexOrThrow("timestamp"));
-            int idLocation = c.getInt(c.getColumnIndexOrThrow("id_location"));
             logsList.add(msg + " - " + timestamp);
             logIds.add(id);
         }
@@ -40,14 +39,13 @@ public class Report extends ListActivity {
         if (position == 0) return;
         int idLog = logIds.get(position - 1);
 
+        Log.i("REPORT", "ENTREI NO ON CLICK");
         Cursor c = BancoDadosSingleton.getInstance().buscar("Logs lg, Location lc", new String[]{"lg.id_location idlog", "lc.id idloc", "lc.latitude lat", "lc.longitude lon"}, "lg.id = " + idLog + " AND lg.id_location = lc.id", null);
-
         if (c.moveToFirst()) {
             int idlog = c.getInt(c.getColumnIndexOrThrow("idlog"));
             int idloc = c.getInt(c.getColumnIndexOrThrow("idloc"));
             double latitude = c.getDouble(c.getColumnIndexOrThrow("lat"));
             double longitude = c.getDouble(c.getColumnIndexOrThrow("lon"));
-
             Toast.makeText(this, "Latitude: " + latitude + "\nLongitude: " + longitude, Toast.LENGTH_LONG).show();
         }
         c.close();
