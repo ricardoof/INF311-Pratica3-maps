@@ -25,9 +25,9 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         String aux = l.getItemAtPosition(position).toString();
-        String mensagem = "";
-        String id_location = "";
-        String timestamp = "";
+        String mensagem;
+        String id_location;
+        String timestamp;
         ContentValues valores;
 
         switch(position) {

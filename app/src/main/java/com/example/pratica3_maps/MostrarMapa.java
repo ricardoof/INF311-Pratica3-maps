@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.Manifest;
 import android.widget.Toast;
@@ -28,7 +27,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.text.DecimalFormat;
 
 public class MostrarMapa extends FragmentActivity implements OnMapReadyCallback {
-    public LatLng VICOSA, coordenada;
+    public LatLng coordenada;
     private FusedLocationProviderClient minhaLocalizacao;
     public Marker meuMarcador, marcadorLocal, marcadorItaocara, marcadorVicosa, marcadorDPI;
     public String descricao;

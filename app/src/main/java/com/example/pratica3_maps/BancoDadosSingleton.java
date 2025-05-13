@@ -41,6 +41,11 @@ public final class BancoDadosSingleton {
         Log.i("BANCO_DADOS", "Abriu conexão com o banco.");
     }
 
+    public SQLiteDatabase getDb() {
+        return db;
+    }
+
+
     // Insere um novo registro
     public long inserir(String tabela, ContentValues valores) {
         long id = db.insert(tabela, null, valores);
